@@ -1,0 +1,7 @@
+clc
+clear
+
+a = 0:0.1:50;
+b = log(a);
+
+plot(a, b, '');
