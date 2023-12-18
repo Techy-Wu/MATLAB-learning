@@ -9,7 +9,7 @@ To make changes, update the MATLAB code and republish this document.
 <title>Copy_of_lattices</title>
 <meta name="generator" content="MATLAB 23.2">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2023-12-16">
+<meta name="DC.date" content="2023-12-18">
 <meta name="DC.source" content="Copy_of_lattices.m">
 <style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -76,15 +76,19 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </head>
 <body>
 <div class="content">
-<pre class="codeinput">clc;
+<pre class="codeinput">
+<span class="comment">% 初始化工作区</span>
+clc;
 clear;
 
-<span class="comment">% 晶体类型标记</span>
-<span class="comment">% 调用函数建立晶系</span>
-<span class="comment">% 设定并划分作图区</span>
-<span class="comment">% 作图</span>
-<span class="comment">% 添加标题</span>
-<span class="comment">% 立方化作图坐标</span>
+<span class="comment">% 以下7个晶系均按照6行代码实现，具体功能如下：</span>
+<span class="comment">% 1 - 晶体类型标记</span>
+<span class="comment">% 2 - 调用函数建立晶系</span>
+<span class="comment">% 3 - 设定并划分作图区</span>
+<span class="comment">% 4 - 作图</span>
+<span class="comment">% 5 - 添加标题</span>
+<span class="comment">% 6 - 立方化作图坐标</span>
+<span class="comment">%</span>
 
 <span class="comment">% Triclinic Lattice</span>
 lattice = build_lattice(<span class="string">'Triclinic'</span>, 5, <span class="string">'a'</span>, 4.0, <span class="string">'b'</span>, 3.0, <span class="string">'c'</span>, 5.0, <span class="string">'alpha'</span>, 1.2 * pi, <span class="string">'beta'</span>, 0.7 * pi, <span class="string">'gamma'</span>, 0.9 * pi);
@@ -92,6 +96,7 @@ subplot(2, 4, 1);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>,<span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Triclinic Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Triclinic Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Monoclinic Lattice</span>
 lattice = build_lattice(<span class="string">'Monoclinic'</span>, 5, <span class="string">'a'</span>, 5.0, <span class="string">'b'</span>, 2.0, <span class="string">'c'</span>, 8.0, <span class="string">'beta'</span>, 0.7 * pi);
@@ -99,6 +104,7 @@ subplot(2, 4, 2);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Monoclinic Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Monoclinic Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Trigonal Lattice</span>
 lattice = build_lattice(<span class="string">'Trigonal'</span>, 5, <span class="string">'a'</span>, 5.0, <span class="string">'alpha'</span>, 0.4 * pi);
@@ -106,6 +112,7 @@ subplot(2, 4, 3);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Trigonal Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Trigonal Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Orthorhombic Lattice</span>
 lattice = build_lattice(<span class="string">'Orthorhombic'</span>, 5, <span class="string">'a'</span>, 7.0, <span class="string">'b'</span>, 5.0, <span class="string">'c'</span>, 10.0);
@@ -113,6 +120,7 @@ subplot(2, 4, 4);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Orthorhombic Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Orthorhombic Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Tetragonal Lattice</span>
 lattice = build_lattice(<span class="string">'Tetragonal'</span>, 5, <span class="string">'a'</span>, 5.0, <span class="string">'c'</span>, 8.0);
@@ -120,6 +128,7 @@ subplot(2, 4, 5);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Tetragonal Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Tetragonal Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Cubic Lattice</span>
 lattice = build_lattice(<span class="string">'Cubic'</span>, 5, <span class="string">'a'</span>, 5.0);
@@ -127,6 +136,7 @@ subplot(2, 4, 6);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Cubic Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Cubic Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Hexagonal Lattice</span>
 lattice = build_lattice(<span class="string">'Hexagonal'</span>, 5, <span class="string">'a'</span>, 5.0);
@@ -134,10 +144,11 @@ subplot(2, 4, 7);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>, <span class="string">'MarkerSize'</span>, 10);
 title(<span class="string">'Hexagonal Lattice'</span>);
 axis <span class="string">square</span>;
+damp_to_rasmol(<span class="string">'Hexagonal Lattice.pdb'</span>, lattice, <span class="string">'Cu'</span>);
 
 <span class="comment">% Function Definition</span>
 <span class="comment">% 晶系构造函数</span>
-<span class="keyword">function</span> [lattice] = build_lattice(lattice_name, enlarge_limit, varargin)
+<span class="keyword">function</span> [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) <span class="comment">% MATLAB中varargin标记标明函数接受可变长度形参元胞</span>
     <span class="comment">% 校验扩增限制</span>
     <span class="keyword">if</span> enlarge_limit &lt; 0
         <span class="comment">% 扩增限制为负抛出异常</span>
@@ -145,6 +156,7 @@ axis <span class="string">square</span>;
     <span class="keyword">end</span>
     <span class="comment">% 分支不同类型晶系</span>
     <span class="keyword">switch</span> lattice_name
+        <span class="comment">% 以三斜晶系为例标注代码解释</span>
         <span class="keyword">case</span> <span class="string">'Triclinic'</span>
             <span class="comment">%获取主要参数</span>
             <span class="keyword">try</span>
@@ -159,16 +171,18 @@ axis <span class="string">square</span>;
                 error(<span class="string">'Parameters invalid or not enough'</span>);
             <span class="keyword">end</span>
             <span class="comment">% 初始化主要参数</span>
+            <span class="comment">% 晶胞原子</span>
             atom1 = [0.0, 0.0, 0.0];
+            <span class="comment">% 基矢量</span>
             ux = [a, 0.0, 0.0];
             uy = [b * cos(gamma), b * sin(gamma), 0.0];
             uz = [c * sin(beta), c * sin(alpha), c * cos(beta) * cos(alpha)];
+            <span class="comment">% 扩增法建立晶系结构</span>
             id = 1;
-            <span class="comment">% 扩增法建立晶系</span>
             <span class="keyword">for</span> i = -enlarge_limit:enlarge_limit
                 <span class="keyword">for</span> j = -enlarge_limit:enlarge_limit
                     <span class="keyword">for</span> k = -enlarge_limit:enlarge_limit
-                        <span class="comment">% 确定本次扩增移动矢量</span>
+                        <span class="comment">% 确定本次扩增的移动矢量</span>
                         vector = ux * i + uy * j + uz * k;
                         <span class="comment">% 添加原子</span>
                         lattice(id, 1:3) = atom1 + vector;
@@ -335,6 +349,22 @@ axis <span class="string">square</span>;
         result = varargin{find(strcmp(parameter_name, varargin)) + 1};
     <span class="keyword">end</span>
 <span class="keyword">end</span>
+
+<span class="comment">% PDB文件输出函数</span>
+<span class="keyword">function</span> damp_to_rasmol(file_name, lattice, element)
+    <span class="comment">% 打开文件并存储文件句柄</span>
+    file_ID = fopen(file_name, <span class="string">'w'</span>);
+    <span class="comment">% 定义rasmol可接受的文件格式范例</span>
+    rasmol_format_spec = <span class="string">'%-6s%-5d %-4s%-1s%-3s  %-4d%-1s   %-8.3f%-8.3f%-8.3f\n'</span>;
+    <span class="comment">% 遍历输出各个原子</span>
+    num = 0;
+    <span class="keyword">for</span> id = 1:length(lattice)
+        num = num + 1;
+        fprintf(file_ID, rasmol_format_spec, <span class="string">'ATOM'</span>, num, element, <span class="string">' '</span>, <span class="string">' '</span>, 1, <span class="string">' '</span>, lattice(id, 1), lattice(id, 2), lattice(id, 3));
+    <span class="keyword">end</span>
+    <span class="comment">% 关闭文件</span>
+    fclose(file_ID);
+<span class="keyword">end</span>
 </pre>
 <img vspace="5" hspace="5" src="Copy_of_lattices_01.png" alt=""> <p class="footer">
 <br>
@@ -344,15 +374,18 @@ axis <span class="string">square</span>;
 </div>
 <!--
 ##### SOURCE BEGIN #####
+% 初始化工作区
 clc;
 clear;
 
-% 晶体类型标记
-% 调用函数建立晶系
-% 设定并划分作图区
-% 作图
-% 添加标题
-% 立方化作图坐标
+% 以下7个晶系均按照6行代码实现，具体功能如下：
+% 1 - 晶体类型标记
+% 2 - 调用函数建立晶系
+% 3 - 设定并划分作图区
+% 4 - 作图
+% 5 - 添加标题
+% 6 - 立方化作图坐标
+% 
 
 % Triclinic Lattice 
 lattice = build_lattice('Triclinic', 5, 'a', 4.0, 'b', 3.0, 'c', 5.0, 'alpha', 1.2 * pi, 'beta', 0.7 * pi, 'gamma', 0.9 * pi); 
@@ -360,6 +393,7 @@ subplot(2, 4, 1);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor','g', 'MarkerSize', 10); 
 title('Triclinic Lattice'); 
 axis square; 
+damp_to_rasmol('Triclinic Lattice.pdb', lattice, 'Cu');
 
 % Monoclinic Lattice
 lattice = build_lattice('Monoclinic', 5, 'a', 5.0, 'b', 2.0, 'c', 8.0, 'beta', 0.7 * pi);
@@ -367,6 +401,7 @@ subplot(2, 4, 2);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Monoclinic Lattice');
 axis square;
+damp_to_rasmol('Monoclinic Lattice.pdb', lattice, 'Cu');
 
 % Trigonal Lattice
 lattice = build_lattice('Trigonal', 5, 'a', 5.0, 'alpha', 0.4 * pi);
@@ -374,6 +409,7 @@ subplot(2, 4, 3);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Trigonal Lattice');
 axis square;
+damp_to_rasmol('Trigonal Lattice.pdb', lattice, 'Cu');
 
 % Orthorhombic Lattice
 lattice = build_lattice('Orthorhombic', 5, 'a', 7.0, 'b', 5.0, 'c', 10.0);
@@ -381,6 +417,7 @@ subplot(2, 4, 4);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Orthorhombic Lattice');
 axis square;
+damp_to_rasmol('Orthorhombic Lattice.pdb', lattice, 'Cu');
 
 % Tetragonal Lattice
 lattice = build_lattice('Tetragonal', 5, 'a', 5.0, 'c', 8.0);
@@ -388,6 +425,7 @@ subplot(2, 4, 5);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Tetragonal Lattice');
 axis square;
+damp_to_rasmol('Tetragonal Lattice.pdb', lattice, 'Cu');
 
 % Cubic Lattice
 lattice = build_lattice('Cubic', 5, 'a', 5.0);
@@ -395,6 +433,7 @@ subplot(2, 4, 6);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Cubic Lattice');
 axis square;
+damp_to_rasmol('Cubic Lattice.pdb', lattice, 'Cu');
 
 % Hexagonal Lattice
 lattice = build_lattice('Hexagonal', 5, 'a', 5.0);
@@ -402,10 +441,11 @@ subplot(2, 4, 7);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Hexagonal Lattice');
 axis square;
+damp_to_rasmol('Hexagonal Lattice.pdb', lattice, 'Cu');
 
 % Function Definition
 % 晶系构造函数
-function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin)
+function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATLAB中varargin标记标明函数接受可变长度形参元胞
     % 校验扩增限制
     if enlarge_limit < 0
         % 扩增限制为负抛出异常
@@ -413,6 +453,7 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin)
     end
     % 分支不同类型晶系
     switch lattice_name
+        % 以三斜晶系为例标注代码解释
         case 'Triclinic'
             %获取主要参数
             try
@@ -427,16 +468,18 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin)
                 error('Parameters invalid or not enough');
             end
             % 初始化主要参数
+            % 晶胞原子
             atom1 = [0.0, 0.0, 0.0];
+            % 基矢量
             ux = [a, 0.0, 0.0];
             uy = [b * cos(gamma), b * sin(gamma), 0.0];
             uz = [c * sin(beta), c * sin(alpha), c * cos(beta) * cos(alpha)];
+            % 扩增法建立晶系结构
             id = 1;
-            % 扩增法建立晶系
             for i = -enlarge_limit:enlarge_limit
                 for j = -enlarge_limit:enlarge_limit
                     for k = -enlarge_limit:enlarge_limit
-                        % 确定本次扩增移动矢量
+                        % 确定本次扩增的移动矢量
                         vector = ux * i + uy * j + uz * k;
                         % 添加原子
                         lattice(id, 1:3) = atom1 + vector;
@@ -602,6 +645,22 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin)
         % 参数组中查找并返回指定参数
         result = varargin{find(strcmp(parameter_name, varargin)) + 1};
     end
+end
+
+% PDB文件输出函数
+function damp_to_rasmol(file_name, lattice, element)
+    % 打开文件并存储文件句柄
+    file_ID = fopen(file_name, 'w');
+    % 定义rasmol可接受的文件格式范例
+    rasmol_format_spec = '%-6s%-5d %-4s%-1s%-3s  %-4d%-1s   %-8.3f%-8.3f%-8.3f\n';
+    % 遍历输出各个原子
+    num = 0;
+    for id = 1:length(lattice)
+        num = num + 1;
+        fprintf(file_ID, rasmol_format_spec, 'ATOM', num, element, ' ', ' ', 1, ' ', lattice(id, 1), lattice(id, 2), lattice(id, 3));
+    end
+    % 关闭文件
+    fclose(file_ID);
 end
 ##### SOURCE END #####
 -->
