@@ -71,18 +71,27 @@ for i = 1:id
 end
 
 % MATLAB作图
-plot3(Ni_crystal(:, 1), Ni_crystal(:, 2), Ni_crystal(:, 3), 'o', 'MarkerFaceColor','g', 'MarkerSize', 10);
+% 作图并保存句柄
+Ni_plot = plot3(Ni_crystal(:, 1), Ni_crystal(:, 2), Ni_crystal(:, 3), 'o', 'MarkerFaceColor','g', 'MarkerSize', 10);
+% 方正化坐标
 axis square;
+% 锁定作图
 hold on;
-plot3(Al_crystal(:, 1), Al_crystal(:, 2), Al_crystal(:, 3), 'o', 'MarkerFaceColor','b', 'MarkerSize', 10);
+Al_plot = plot3(Al_crystal(:, 1), Al_crystal(:, 2), Al_crystal(:, 3), 'o', 'MarkerFaceColor','b', 'MarkerSize', 10);
 axis square;
-hold off;                                                                                                                         
+% 取消锁定
+hold off;
+% 添加图例，并定位在图右侧(East side)
+legend([Ni_plot, Al_plot], 'Ni Atom', 'Al Atom', 'Location', 'eastoutside');
 
 % 输出pdb和txt
+% 打开文件并保存句柄
 pdb_file_ID = fopen('FCC-NiAl lattice.pdb', 'w');
 txt_file_ID = fopen('FCC-NiAl lattice.txt', 'w');
+% 定义文件格式
 rasmol_format_spec = '%-6s%-5d %-4s%-1s%-3s  %-4d%-1s   %-8.3f%-8.3f%-8.3f\n';
 table_format_spec = '%-5s\t%-8.3f\t%-8.3f\t%-8.3f\n';
+% 循环输出各原子坐标信息
 num = 0;
 for id = 1:length(Ni_crystal)
     num = num + 1;
@@ -95,6 +104,7 @@ for id = 1:length(Al_crystal)
     fprintf(pdb_file_ID, rasmol_format_spec, 'ATOM', num, 'Al', ' ', ' ', 1, ' ', Al_crystal(id, 1), Al_crystal(id, 2), Al_crystal(id, 3));
     fprintf(txt_file_ID, table_format_spec, '2', Al_crystal(id, 1), Al_crystal(id, 2), Al_crystal(id, 3));
 end
+% 关闭文件
 fclose(pdb_file_ID);
 fclose(txt_file_ID);
 

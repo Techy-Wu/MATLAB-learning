@@ -6,7 +6,7 @@ clc;
 clear;
 
 % 以下7个晶系均按照6行代码实现，具体功能如下：
-% 1 - 晶体类型标记
+% 1 - 晶体类型标记（注释行）
 % 2 - 调用函数建立晶系
 % 3 - 设定并划分MATLAB作图区
 % 4 - MATLAB作图
@@ -284,6 +284,7 @@ function output_lattice = lattice_slicer(input_lattice, min_limit, max_limit)
     id = 1;
     for i = 1:length(input_lattice)
         if sum(input_lattice(i, 1:3) >= min_limit) == 3 && sum(input_lattice(i, 1:3) <= max_limit) == 3
+            % 注：MATLAB中矩阵的逻辑运算将返回矩阵形式结果，矩阵全为1即全为TRUE
             output_lattice(id, 1:3) = input_lattice(i, 1:3);
             id = id + 1;
         end
