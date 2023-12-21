@@ -67,8 +67,6 @@ damp_to_rasmol('Cubic Lattice.pdb', lattice, 'Cu');
 lattice = build_lattice('Hexagonal', 5, 'a', 5.0);
 % 使用截取工具截取合适区域
 lattice = lattice_slicer(lattice, [22, 17, 16], [22, 17, 16] + [10, 18, 9]); % 具体边界数据手动计算得到
-% 修剪数据，去除不属于HCP基础晶格的原子
-lattice = [lattice(1:16, :); lattice(18, :)];
 subplot(2, 4, 7);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Hexagonal Lattice');
@@ -87,8 +85,9 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
     switch lattice_name
         % 以三斜晶系为例标注代码解释
         case 'Triclinic'
-            %获取主要参数
+            % 获取晶格参数
             try
+                % 尝试从实参获取
                 a = get_parameter('a');
                 b = get_parameter('b');
                 c = get_parameter('c');
@@ -99,7 +98,7 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
                 % 获取失败抛出异常
                 error('Parameters invalid or not enough');
             end
-            % 初始化主要参数
+            % 初始化基始参数
             % 晶胞原子
             atom1 = [0.0, 0.0, 0.0];
             % 基矢量
@@ -245,8 +244,6 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
             end
             atom1 = [0.0, 0.0, 0.0];
             atom2 = [0.5 * a, sqrt(3) / 2 * a, 0.0];
-            atom3 = [0.0, 2. / sqrt(3) * a, 0.5 * c];
-            atom4 = [-0.5 * a, -a / sqrt(3) / 2, 0.5 * c];
             ux = [a, 0.0, 0.0];
             uy = [0.0, sqrt(3) * a, 0.0];
             uz = [0.0, 0.0, c];
@@ -258,10 +255,6 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
                         lattice(id, 1:3) = atom1 + vector;
                         id = id + 1;
                         lattice(id, 1:3) = atom2 + vector;
-                        id = id + 1;
-                        lattice(id, 1:3) = atom3 + vector;
-                        id = id + 1;
-                        lattice(id, 1:3) = atom4 + vector;
                         id = id + 1;
                     end
                 end
