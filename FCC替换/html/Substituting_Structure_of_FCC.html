@@ -9,7 +9,7 @@ To make changes, update the MATLAB code and republish this document.
 <title>Substituting_Structure_of_FCC</title>
 <meta name="generator" content="MATLAB 23.2">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2023-12-18">
+<meta name="DC.date" content="2023-12-21">
 <meta name="DC.source" content="Substituting_Structure_of_FCC.m">
 <style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -77,6 +77,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 <body>
 <div class="content">
 <pre class="codeinput">
+<span class="comment">% Open Source on</span>
+<span class="comment">% https://github.com/Techy-Wu/MATLAB-learning/tree/8f7d3a6a3edda5ad190737fc7fd204305d90a95e/FCC%E6%9B%BF%E6%8D%A2</span>
+
 <span class="comment">% 初始化工作区</span>
 clc
 clear
@@ -100,9 +103,9 @@ uz = [0.0, 0.0, 1.0 * a0];
 
 <span class="comment">% 循环生成</span>
 id = 0;
-<span class="keyword">for</span> i = -10:10
-    <span class="keyword">for</span> j = -10:10
-        <span class="keyword">for</span> k = -10:10
+<span class="keyword">for</span> i = 0:10
+    <span class="keyword">for</span> j = 0:10
+        <span class="keyword">for</span> k = 0:10
             <span class="comment">% 得到位移矢量</span>
             vector = ux * i + uy * j + uz * k;
             <span class="comment">% 由晶胞原子出发沿位移矢量添加原子</span>
@@ -118,11 +121,18 @@ id = 0;
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
+<span class="comment">% 裁切生成的晶格以符合仅10个胞</span>
+crystal = lattice_slicer(crystal, [0.0, 0.0, 0.0], [a0*10, a0*10, a0*10]);
+<span class="comment">% 更新晶格矩阵长度</span>
+id = length(crystal);
+
 <span class="comment">% 生成序号的随机全排列数列</span>
 rand_list = randperm(id);
 <span class="comment">% 按比例分配随机数号段</span>
-Ni_atoms_indices = rand_list(1:id / 2);
-Al_atoms_indices = rand_list((id / 2 + 1):id);
+Ni_atoms_indices = rand_list(1:ceil(id / 2));
+Al_atoms_indices = rand_list((ceil(id / 2) + 1):id);
+fprintf(<span class="string">'Total amount of Ni atoms: %d\n'</span>, length(Ni_atoms_indices));
+fprintf(<span class="string">'Total amount of Al atoms: %d\n'</span>, length(Al_atoms_indices));
 
 <span class="comment">% 遍历查找并拾取对应原子</span>
 Ni_id = 1;
@@ -166,6 +176,20 @@ num = 0;
 <span class="keyword">end</span>
 fclose(pdb_file_ID);
 fclose(txt_file_ID);
+
+<span class="comment">% 晶格裁切函数</span>
+<span class="keyword">function</span> output_lattice = lattice_slicer(input_lattice, min_limit, max_limit)
+    id = 1;
+    <span class="keyword">for</span> i = 1:length(input_lattice)
+        <span class="keyword">if</span> sum(input_lattice(i, 1:3) &gt;= min_limit) == 3 &amp;&amp; sum(input_lattice(i, 1:3) &lt;= max_limit) == 3
+            output_lattice(id, 1:3) = input_lattice(i, 1:3);
+            id = id + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre>
+<pre class="codeoutput">Total amount of Ni atoms: 2316
+Total amount of Al atoms: 2315
 </pre>
 <img vspace="5" hspace="5" src="Substituting_Structure_of_FCC_01.png" alt=""> <p class="footer">
 <br>
@@ -175,6 +199,9 @@ fclose(txt_file_ID);
 </div>
 <!--
 ##### SOURCE BEGIN #####
+% Open Source on
+% https://github.com/Techy-Wu/MATLAB-learning/tree/8f7d3a6a3edda5ad190737fc7fd204305d90a95e/FCC%E6%9B%BF%E6%8D%A2
+
 % 初始化工作区
 clc
 clear
@@ -198,9 +225,9 @@ uz = [0.0, 0.0, 1.0 * a0];
 
 % 循环生成
 id = 0;
-for i = -10:10
-    for j = -10:10
-        for k = -10:10
+for i = 0:10
+    for j = 0:10
+        for k = 0:10
             % 得到位移矢量
             vector = ux * i + uy * j + uz * k;
             % 由晶胞原子出发沿位移矢量添加原子
@@ -216,11 +243,18 @@ for i = -10:10
     end
 end
 
+% 裁切生成的晶格以符合仅10个胞
+crystal = lattice_slicer(crystal, [0.0, 0.0, 0.0], [a0*10, a0*10, a0*10]);
+% 更新晶格矩阵长度
+id = length(crystal);
+
 % 生成序号的随机全排列数列
 rand_list = randperm(id);
 % 按比例分配随机数号段
-Ni_atoms_indices = rand_list(1:id / 2);
-Al_atoms_indices = rand_list((id / 2 + 1):id);
+Ni_atoms_indices = rand_list(1:ceil(id / 2));
+Al_atoms_indices = rand_list((ceil(id / 2) + 1):id);
+fprintf('Total amount of Ni atoms: %d\n', length(Ni_atoms_indices));
+fprintf('Total amount of Al atoms: %d\n', length(Al_atoms_indices));
 
 % 遍历查找并拾取对应原子
 Ni_id = 1;
@@ -243,7 +277,7 @@ axis square;
 hold on;
 plot3(Al_crystal(:, 1), Al_crystal(:, 2), Al_crystal(:, 3), 'o', 'MarkerFaceColor','b', 'MarkerSize', 10);
 axis square;
-hold off;
+hold off;                                                                                                                         
 
 % 输出pdb和txt
 pdb_file_ID = fopen('FCC-NiAl lattice.pdb', 'w');
@@ -264,6 +298,17 @@ for id = 1:length(Al_crystal)
 end
 fclose(pdb_file_ID);
 fclose(txt_file_ID);
+
+% 晶格裁切函数
+function output_lattice = lattice_slicer(input_lattice, min_limit, max_limit)
+    id = 1;
+    for i = 1:length(input_lattice)
+        if sum(input_lattice(i, 1:3) >= min_limit) == 3 && sum(input_lattice(i, 1:3) <= max_limit) == 3
+            output_lattice(id, 1:3) = input_lattice(i, 1:3);
+            id = id + 1;
+        end
+    end
+end
 ##### SOURCE END #####
 -->
 </body>

@@ -1,3 +1,6 @@
+% Open Source on
+% https://github.com/Techy-Wu/MATLAB-learning/tree/8f7d3a6a3edda5ad190737fc7fd204305d90a95e/FCC%E6%9B%BF%E6%8D%A2
+
 % 初始化工作区
 clc
 clear
@@ -21,9 +24,9 @@ uz = [0.0, 0.0, 1.0 * a0];
 
 % 循环生成
 id = 0;
-for i = -10:10
-    for j = -10:10
-        for k = -10:10
+for i = 0:10
+    for j = 0:10
+        for k = 0:10
             % 得到位移矢量
             vector = ux * i + uy * j + uz * k;
             % 由晶胞原子出发沿位移矢量添加原子
@@ -39,11 +42,18 @@ for i = -10:10
     end
 end
 
+% 裁切生成的晶格以符合仅10个胞
+crystal = lattice_slicer(crystal, [0.0, 0.0, 0.0], [a0*10, a0*10, a0*10]);
+% 更新晶格矩阵长度
+id = length(crystal);
+
 % 生成序号的随机全排列数列
 rand_list = randperm(id);
 % 按比例分配随机数号段
-Ni_atoms_indices = rand_list(1:id / 2);
-Al_atoms_indices = rand_list((id / 2 + 1):id);
+Ni_atoms_indices = rand_list(1:ceil(id / 2));
+Al_atoms_indices = rand_list((ceil(id / 2) + 1):id);
+fprintf('Total amount of Ni atoms: %d\n', length(Ni_atoms_indices));
+fprintf('Total amount of Al atoms: %d\n', length(Al_atoms_indices));
 
 % 遍历查找并拾取对应原子
 Ni_id = 1;
@@ -66,7 +76,7 @@ axis square;
 hold on;
 plot3(Al_crystal(:, 1), Al_crystal(:, 2), Al_crystal(:, 3), 'o', 'MarkerFaceColor','b', 'MarkerSize', 10);
 axis square;
-hold off;
+hold off;                                                                                                                         
 
 % 输出pdb和txt
 pdb_file_ID = fopen('FCC-NiAl lattice.pdb', 'w');
@@ -87,3 +97,14 @@ for id = 1:length(Al_crystal)
 end
 fclose(pdb_file_ID);
 fclose(txt_file_ID);
+
+% 晶格裁切函数
+function output_lattice = lattice_slicer(input_lattice, min_limit, max_limit)
+    id = 1;
+    for i = 1:length(input_lattice)
+        if sum(input_lattice(i, 1:3) >= min_limit) == 3 && sum(input_lattice(i, 1:3) <= max_limit) == 3
+            output_lattice(id, 1:3) = input_lattice(i, 1:3);
+            id = id + 1;
+        end
+    end
+end
