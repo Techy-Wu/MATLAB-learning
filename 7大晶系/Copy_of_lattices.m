@@ -1,4 +1,4 @@
-% Open source on
+% Open source on 开源于
 % https://github.com/Techy-Wu/MATLAB-learning/tree/8f7d3a6a3edda5ad190737fc7fd204305d90a95e/7%E5%A4%A7%E6%99%B6%E7%B3%BB
 
 % 初始化工作区
@@ -8,11 +8,12 @@ clear;
 % 以下7个晶系均按照6行代码实现，具体功能如下：
 % 1 - 晶体类型标记
 % 2 - 调用函数建立晶系
-% 3 - 设定并划分作图区
-% 4 - 作图
-% 5 - 添加标题
-% 6 - 立方化作图坐标
-% 
+% 3 - 设定并划分MATLAB作图区
+% 4 - MATLAB作图
+% 5 - 添加MATLAB作图标题
+% 6 - 立方化MATLAB作图坐标
+% 7 - 调用函数输出至PDB文件
+%
 
 % Triclinic Lattice 
 lattice = build_lattice('Triclinic', 1, 'a', 7.0, 'b', 10.0, 'c', 2.0, 'alpha', 0.8 * pi, 'beta', 0.7 * pi, 'gamma', 0.2 * pi); 
