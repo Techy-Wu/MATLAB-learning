@@ -16,7 +16,7 @@ clear;
 %
 
 % Triclinic Lattice 
-lattice = build_lattice('Triclinic', 1, 'a', 7.0, 'b', 10.0, 'c', 2.0, 'alpha', 0.8 * pi, 'beta', 0.7 * pi, 'gamma', 0.2 * pi); 
+lattice = build_lattice('Triclinic', 1, 'a', 7.0, 'b', 10.0, 'c', 2.0, 'alpha', 0.8, 'beta', 0.7, 'gamma', 0.2); 
 subplot(2, 4, 1); 
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor','g', 'MarkerSize', 10); 
 title('Triclinic Lattice'); 
@@ -24,7 +24,7 @@ axis square;
 damp_to_rasmol('Triclinic Lattice.pdb', lattice, 'Cu');
 
 % Monoclinic Lattice
-lattice = build_lattice('Monoclinic', 1, 'a', 5.0, 'b', 2.0, 'c', 8.0, 'beta', 0.7 * pi);
+lattice = build_lattice('Monoclinic', 1, 'a', 5.0, 'b', 2.0, 'c', 8.0, 'beta', 0.7);
 subplot(2, 4, 2);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Monoclinic Lattice');
@@ -32,7 +32,7 @@ axis square;
 damp_to_rasmol('Monoclinic Lattice.pdb', lattice, 'Cu');
 
 % Trigonal Lattice
-lattice = build_lattice('Trigonal', 1, 'a', 5.0, 'alpha', 0.4 * pi);
+lattice = build_lattice('Trigonal', 1, 'a', 5.0, 'alpha', 0.4);
 subplot(2, 4, 3);
 plot3(lattice(:, 1), lattice(:, 2), lattice(:, 3), 'o', 'MarkerFaceColor', 'g', 'MarkerSize', 10);
 title('Trigonal Lattice');
@@ -75,7 +75,9 @@ damp_to_rasmol('Hexagonal Lattice.pdb', lattice, 'Cu');
 
 % Function Definition
 % 晶系构造函数
-function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATLAB中varargin标记标明函数接受可变长度形参元胞
+function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) 
+    % MATLAB中varargin标记标明函数接受可变长度形参元胞
+    % 角度填弧度制下pi的系数，以使用sinpi/cospi替换sin/cos增加计算精度
     % 校验扩增限制
     if enlarge_limit < 0
         % 扩增限制为负抛出异常
@@ -83,28 +85,86 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
     end
     % 分支不同类型晶系
     switch lattice_name
-        % 以三斜晶系为例标注代码解释
-        case 'Triclinic'
-            % 获取晶格参数
-            try
-                % 尝试从实参获取
-                a = get_parameter('a');
-                b = get_parameter('b');
-                c = get_parameter('c');
-                alpha = get_parameter('alpha');
-                beta = get_parameter('beta');
-                gamma = get_parameter('gamma');
-            catch
-                % 获取失败抛出异常
-                error('Parameters invalid or not enough');
+        % 类正方晶系算法相近，合并计算
+        case {'Triclinic', 'Monoclinic', 'Trigonal', 'Orthorhombic', 'Tetragonal', 'Cubic'}
+            switch lattice_name
+                % 获取不同类型晶格的晶格参数
+                case 'Triclinic'
+                    try
+                        % 尝试从实参获取
+                        a = get_parameter('a');
+                        b = get_parameter('b');
+                        c = get_parameter('c');
+                        alpha = get_parameter('alpha');
+                        beta = get_parameter('beta');
+                        gamma = get_parameter('gamma');
+                    catch
+                        % 获取失败抛出异常
+                        error('Parameters invalid or not enough');
+                    end
+                case 'Monoclinic'
+                    try
+                        a = get_parameter('a');
+                        b = get_parameter('b');
+                        c = get_parameter('c');
+                        beta = get_parameter('beta');
+                    catch
+                        error('Parameters invalid or not enough');
+                    end                        
+                    alpha = 0.5;
+                    gamma = 0.5;
+                case 'Trigonal'
+                    try
+                        a = get_parameter('a');
+                        alpha = get_parameter('alpha');
+                    catch
+                        error('Parameters invalid or not enough');
+                    end
+                    b = a;
+                    c = a;
+                    beta = alpha;
+                    gamma = alpha;
+                case 'Orthorhombic'
+                    try
+                        a = get_parameter('a');
+                        b = get_parameter('b');
+                        c = get_parameter('c');
+                    catch
+                        error('Parameters invalid or not enough')
+                    end
+                    alpha = 0.5;
+                    beta = 0.5;
+                    gamma = 0.5;
+                case 'Tetragonal'
+                    try
+                        a = get_parameter('a');
+                        c = get_parameter('c');
+                    catch
+                        error('Parameters invalid or not enough');
+                    end
+                    b = a;
+                    alpha = 0.5;
+                    beta = 0.5;
+                    gamma = 0.5;
+                case 'Cubic'
+                    try
+                        a = get_parameter('a');
+                    catch
+                        error('Parameters invalid or not enough');
+                    end
+                    b = a;
+                    c = a;
+                    alpha = 0.5;
+                    beta = 0.5;
+                    gamma = 0.5;
             end
             % 初始化基始参数
             % 晶胞原子
             atom1 = [0.0, 0.0, 0.0];
             % 基矢量
             ux = [a, 0.0, 0.0];
-            uy = [b * cos(gamma), b * sin(gamma), 0.0];
-            uz = [c * sin(beta), c * sin(alpha), c * cos(beta) * cos(alpha)];
+            uy = [b * cospi(gamma), b * sinpi(gamma), 0.0];
+            uz = [c * cospi(beta), c * cospi(alpha), c * sinpi(beta) * sinpi(alpha)];
             % 扩增法建立晶系结构
             id = 1;
             for i = 0:enlarge_limit
@@ -118,125 +178,16 @@ function [lattice] = build_lattice(lattice_name, enlarge_limit, varargin) % MATL
                     end
                 end
             end
-
-        case 'Monoclinic'
-            try
-                a = get_parameter('a');
-                b = get_parameter('b');
-                c = get_parameter('c');
-                beta = 0.7*pi;
-            catch
-                error('Parameters invalid or not enough');
-            end
-            atom1 = [0.0, 0.0, 0.0];
-            ux = [a, 0.0, 0.0];
-            uy = [0.0, b, 0.0];
-            uz = [c * cos(beta), 0.0, c * sin(beta)];
-            id = 1;
-            for i = 0:enlarge_limit
-                for j = 0:enlarge_limit
-                    for k = 0:enlarge_limit
-                        vector = ux * i + uy * j + uz * k;
-                        lattice(id, 1:3) = atom1 + vector;
-                        id = id + 1;
-                    end
-                end
-            end
-
-        case 'Trigonal'
-            try
-                a = get_parameter('a');
-                alpha = get_parameter('alpha');
-            catch
-                error('Parameters invalid or not enough');
-            end
-            atom1 = [0.0, 0.0, 0.0];
-            ux = [a, 0.0, 0.0];
-            uy = [a * cos(alpha), a * sin(alpha), 0.0];
-            uz = [a * sin(alpha), a * sin(alpha), a * cos(alpha) * cos(alpha)];
-            id = 1;
-            for i = 0:enlarge_limit
-                for j = 0:enlarge_limit
-                    for k = 0:enlarge_limit
-                        vector = ux * i + uy * j + uz * k;
-                        lattice(id, 1:3) = atom1 + vector;
-                        id = id + 1;
-                    end
-                end
-            end
-
-        case 'Orthorhombic'
-            try
-                a = get_parameter('a');
-                b = get_parameter('b');
-                c = get_parameter('c');
-            catch
-                error('Parameters invalid or not enough')
-            end
-            atom1 = [0.0, 0.0, 0.0];
-            ux = [a, 0.0, 0.0];
-            uy = [0.0, b, 0.0];
-            uz = [0.0, 0.0, c];
-            id = 1;
-            for i = 0:enlarge_limit
-                for j = 0:enlarge_limit
-                    for k = 0:enlarge_limit
-                        vector = ux * i + uy * j + uz * k;
-                        lattice(id, 1:3) = atom1 + vector;
-                        id = id + 1;
-                    end
-                end
-            end
-
-        case 'Tetragonal'
-            try
-                a = get_parameter('a');
-                c = get_parameter('c');
-            catch
-                error('Parameters invalid or not enough');
-            end
-            atom1 = [0.0, 0.0, 0.0];
-            ux = [a, 0.0, 0.0];
-            uy = [0.0, a, 0.0];
-            uz = [0.0, 0.0, c];
-            id = 1;
-            for i = 0:enlarge_limit
-                for j = 0:enlarge_limit
-                    for k = 0:enlarge_limit
-                        vector = ux * i + uy * j + uz * k;
-                        lattice(id, 1:3) = atom1 + vector;
-                        id = id + 1;
-                    end
-                end
-            end
-
-        case 'Cubic'
-            try
-                a = get_parameter('a');
-            catch
-                error('Parameters invalid or not enough');
-            end
-            atom1 = [0.0, 0.0, 0.0];
-            ux = [a, 0.0, 0.0];
-            uy = [0.0, a, 0.0];
-            uz = [0.0, 0.0, a];
-            id = 1;
-            for i = 0:enlarge_limit
-                for j = 0:enlarge_limit
-                    for k = 0:enlarge_limit
-                        vector = ux * i + uy * j + uz * k;
-                        lattice(id, 1:3) = atom1 + vector;
-                        id = id + 1;
-                    end
-                end
-            end
-
+        
+        % 六方晶系计算单列
         case 'Hexagonal'
+            % 获取主要晶格参数
             try
                 a = get_parameter('a');
                 try
                     c = get_parameter('c');
                 catch
+                    % 若未指定c，则以经验计算
                     c = a * 1.633;
                 end
             catch
